@@ -1,0 +1,29 @@
+{
+  "name": "llej-doc",
+  "version": "1.0.0",
+  "description": "md 文档生成html",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2234839/llej-doc.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2234839/llej-doc/issues"
+  },
+  "homepage": "https://github.com/2234839/llej-doc#readme",
+  "devDependencies": {
+    "@types/markdown-it": "0.0.9",
+    "@types/node": "^12.12.7"
+  },
+  "dependencies": {
+    "markdown-it": "^10.0.0",
+    "ts-node": "^8.5.0",
+    "typescript": "^3.7.2"
+  }
+}
