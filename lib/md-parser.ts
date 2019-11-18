@@ -28,7 +28,7 @@ var md = MarkdownIt({
 
 /** 图片渲染 */
 const a_default_render = md.renderer.rules.a
-md.renderer.rules.a = function(tokens, idx, options, env, self) {
+md.renderer.rules.a = function (tokens, idx, options, env, self) {
   console.log(tokens)
   return a_default_render(tokens, idx, options, env, self)
 }

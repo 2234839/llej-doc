@@ -3,4 +3,5 @@ export const config = {
   out_dir: './test/out',
   /** 服务器的基本路径 */
   basePath: './',
+  template:"./template/article.html"
 }
