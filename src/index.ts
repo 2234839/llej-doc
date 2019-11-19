@@ -4,6 +4,7 @@ import { md_parser_article } from "../lib/md-parser";
 import Path from "path";
 import { directory_tree, directory_to_generate } from "../lib/directory_to_generate";
 /** 程序一进来的时候的时间 */
+const res = config;
 
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);

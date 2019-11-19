@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import Path from "path";
 import { md_render } from "./md-parser";
 import { config } from "../src/config";
+const res = config;
 /**目录树 */
 export type directory_tree = {
   /** 当前这级目录的名称 */
