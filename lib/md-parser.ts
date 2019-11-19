@@ -26,13 +26,9 @@ var md = MarkdownIt({
   //   },
 })
 
-/** 图片渲染 */
-const a_default_render = md.renderer.rules.a
-md.renderer.rules.a = function(tokens, idx, options, env, self) {
-  console.log(tokens)
-  return a_default_render(tokens, idx, options, env, self)
-}
-
+md.use(require('markdown-it-anchor')) //为标题添加id
+md.use(require('markdown-it-table-of-contents')) //[[toc]] 生成目录
+// md.use(require('markdown-it-multimd-table')) // 表格 好像对格式化后的没用
 /** 解析文章md */
 export function md_parser_article(md_str: string) {
   const title = md_str.match(/(?<=^# ).*/)
