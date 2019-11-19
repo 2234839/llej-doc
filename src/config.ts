@@ -7,6 +7,7 @@ export const config = {
   article_template: isWin ? "D:/code/doc/content/article.html" : "/root/doc/content/article.html",
   menu_template: isWin ? "D:/code/doc/content/menu.html" : "/root/doc/content/menu.html",
   footer_template: isWin ? "D:/code/doc/content/footer.html" : "/root/doc/content/footer.html",
+  header_template: isWin ? "D:/code/doc/content/header.html" : "/root/doc/content/header.html",
   isWin,
   /** 配置这个没用，因为会被覆盖 */
   html: "",

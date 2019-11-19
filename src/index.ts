@@ -21,6 +21,8 @@ void (async function() {
     config.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
     config.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
     config.footer_template = eval(config.footer_template);
+    config.header_template = "`" + (await fs.readFile(config.header_template)).toString() + "`";
+    config.header_template = eval(config.header_template);
   } catch (error) {
     console.error(error);
     throw new Error("读取模板失败");
