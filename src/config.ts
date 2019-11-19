@@ -9,8 +9,6 @@ export const config = {
   footer_template: isWin ? "D:/code/doc/content/footer.html" : "/root/doc/content/footer.html",
   header_template: isWin ? "D:/code/doc/content/header.html" : "/root/doc/content/header.html",
   isWin,
-  /** 配置这个没用，因为会被覆盖 */
-  html: "",
   /** 过滤一些目录 */
   filter_dir: ["D:\\code\\doc\\content\\node_modules", "/root/doc/content/node_modules"],
 };
