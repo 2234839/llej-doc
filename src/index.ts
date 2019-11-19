@@ -1,14 +1,14 @@
-import { config } from "./config";
-import { promises as fs, Dir, mkdir } from "fs";
-import { md_parser_article } from "../lib/md-parser";
+import { promises as fs } from "fs";
 import Path from "path";
-import { directory_tree, directory_to_generate } from "../lib/directory_to_generate";
+import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
+import { md_parser_article } from "../lib/md-parser";
+import { config } from "./config";
 /** 程序一进来的时候的时间 */
 const res = config;
 
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
-
+config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
 console.time("总共耗时");
 void (async function() {
   const three: directory_tree = {
@@ -42,15 +42,21 @@ async function parse(path: string, three: directory_tree) {
   /** 目录 */
   const directory = result.filter((dirent) => dirent.isDirectory());
 
-  /** 递归目录 */
+  /** 递归编译所有目录 */
   await Promise.all(
-    directory.map(async (dirent) => {
-      three.directory[dirent.name] = {
-        directory: {},
-        files: {},
-      };
-      return await parse(Path.join(path, dirent.name), three.directory[dirent.name]);
-    }),
+    directory
+      .filter((dirent) => {
+        const dir_path = Path.join(path, "/", dirent.name);
+        // 返回不在过滤名单中的
+        return !config.filter_dir.includes(dir_path);
+      })
+      .map(async (dirent) => {
+        three.directory[dirent.name] = {
+          directory: {},
+          files: {},
+        };
+        return await parse(Path.join(path, dirent.name), three.directory[dirent.name]);
+      }),
   );
 
   /** 复制文件到目标目录 */
