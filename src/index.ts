@@ -3,6 +3,7 @@ import Path from "path";
 import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
 import { md_parser_article } from "../lib/md-parser";
 import { config } from "./config";
+import fse from "fs-extra";
 /** 程序一进来的时候的时间 */
 const res = config;
 
@@ -27,6 +28,8 @@ void (async function() {
     console.error(error);
     throw new Error("读取模板失败");
   }
+  await fse.copy(config.input_dir, config.out_dir);
+
   await parse(config.input_dir, three);
   directory_to_generate(three, config.out_dir);
   // console.log(three);
@@ -57,21 +60,6 @@ async function parse(path: string, three: directory_tree) {
         };
         return await parse(Path.join(path, dirent.name), three.directory[dirent.name]);
       }),
-  );
-
-  /** 复制文件到目标目录 */
-  await Promise.all(
-    files.map(async (dirent) => {
-      three.files[dirent.name] = {};
-      const file_path = Path.join(path, "/", dirent.name);
-      const out_file_path = file_path.replace(config.input_dir, config.out_dir);
-      try {
-        await fs.copyFile(file_path, out_file_path);
-      } catch (error) {
-        await fs.mkdir(Path.dirname(out_file_path), { recursive: true });
-        await fs.copyFile(file_path, out_file_path);
-      }
-    }),
   );
   /** md 的文件 */
   await Promise.all(
