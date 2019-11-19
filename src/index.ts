@@ -33,11 +33,11 @@ void (async function() {
 })();
 
 async function parse(path: string, three: directory_tree) {
-  const res = await fs.readdir(path, { withFileTypes: true });
+  const result = await fs.readdir(path, { withFileTypes: true });
   /** 所有的文件 */
-  const files = res.filter((dirent) => dirent.isFile());
+  const files = result.filter((dirent) => dirent.isFile());
   /** 目录 */
-  const directory = res.filter((dirent) => dirent.isDirectory());
+  const directory = result.filter((dirent) => dirent.isDirectory());
 
   /** 递归目录 */
   await Promise.all(
@@ -83,6 +83,7 @@ async function parse(path: string, three: directory_tree) {
         /** 重点是解析file */
         try {
           file.html = eval(config.article_template);
+          res.html = file.html;
         } catch (error) {
           console.error("加载模板失败", error);
         }

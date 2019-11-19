@@ -31,14 +31,11 @@ export async function directory_to_generate(directory_tree: directory_tree, path
   /** 没有文章的不生成目录 */
   if (paths.length === 0) return;
   paths = paths.map((str) => str);
-  const html = md_render(paths.join("\n"));
-  const menu = { html };
+  res.html = md_render(paths.join("\n"));
   /** 生成目录 */
   try {
-    console.log(config.footer_template);
-
-    menu.html = eval(config.menu_template);
-    await fs.writeFile(Path.join(path, "/", "index.html"), menu.html);
+    res.html == eval(config.menu_template);
+    await fs.writeFile(Path.join(path, "/", "index.html"), res.html);
   } catch (error) {
     console.error(error);
   }

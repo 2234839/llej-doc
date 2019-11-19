@@ -8,4 +8,6 @@ export const config = {
   menu_template: isWin ? "" : "/root/doc/content/menu.html",
   footer_template: isWin ? "" : "/root/doc/content/footer.html",
   isWin,
+  /** 配置这个没用，因为会被覆盖 */
+  html: "",
 };
