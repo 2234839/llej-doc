@@ -83,7 +83,6 @@ async function parse(path: string, three: directory_tree) {
         /** 重点是解析file */
         try {
           file.html = eval(config.article_template);
-          res.html = file.html;
         } catch (error) {
           console.error("加载模板失败", error);
         }
