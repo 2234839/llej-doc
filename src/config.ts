@@ -17,7 +17,7 @@ export const config = {
     "/root/doc/.git",
     "D:\\code\\doc\\.vscode",
     "/root/doc/.vscode",
-    "D:\\code\\doc\\themes",
-    "/root/doc/themes",
+    "D:\\code\\doc\\_themes",
+    "/root/doc/_themes",
   ],
 };
