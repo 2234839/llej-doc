@@ -34,7 +34,7 @@ export async function directory_to_generate(directory_tree: directory_tree, path
   const menu = { html: md_render(paths.join("\n")) };
   /** 生成目录 */
   try {
-    menu.html == eval(config.menu_template);
+    menu.html = eval(config.menu_template);
     await fs.writeFile(Path.join(path, "/", "index.html"), menu.html);
   } catch (error) {
     console.error(error);
