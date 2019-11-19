@@ -6,5 +6,6 @@ export const config = {
   basePath: "./",
   article_template: isWin ? "" : "/root/doc/content/article.html",
   menu_template: isWin ? "" : "/root/doc/content/menu.html",
+  footer_template: isWin ? "" : "/root/doc/content/footer.html",
   isWin,
 };

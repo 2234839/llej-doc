@@ -18,13 +18,14 @@ void (async function() {
   try {
     config.article_template = "`" + (await fs.readFile(config.article_template)).toString() + "`";
     config.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
+    config.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
   } catch (error) {
     console.error(error);
     throw new Error("读取模板失败");
   }
   await parse(config.input_dir, three);
   directory_to_generate(three, config.out_dir);
-  console.log(three);
+  // console.log(three);
   process.once("exit", () => {
     console.timeEnd("总共耗时");
   });
