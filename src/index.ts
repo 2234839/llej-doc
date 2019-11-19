@@ -20,6 +20,7 @@ void (async function() {
     config.article_template = "`" + (await fs.readFile(config.article_template)).toString() + "`";
     config.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
     config.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
+    config.footer_template = eval(config.footer_template);
   } catch (error) {
     console.error(error);
     throw new Error("读取模板失败");
