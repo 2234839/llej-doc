@@ -24,7 +24,7 @@ export async function directory_to_generate(directory_tree: directory_tree, path
   for (const key in directory_tree.directory) {
     const element = directory_tree.directory[key]
     directory_to_generate(element, Path.join(path, '/', key))
-    paths.push(`[${key}/](${key})`)
+    paths.push(`[${key}/](${key}/)`)
   }
   /** 没有文章的不生成目录 */
   if (paths.length === 0) return
