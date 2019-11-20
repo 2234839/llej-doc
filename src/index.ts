@@ -59,7 +59,7 @@ async function parse(path: string, three: directory_tree) {
           files: {},
         };
         return await parse(Path.join(path, dirent.name), three.directory[dirent.name]);
-      }),
+      })
   );
   /** md 的文件 */
   await Promise.all(
@@ -75,7 +75,7 @@ async function parse(path: string, three: directory_tree) {
         }
         const out_file_path = Path.resolve(__dirname, file_path.replace(/md$/, "html")).replace(
           config.input_dir,
-          config.out_dir,
+          config.out_dir
         );
         /** 重点是解析file */
         try {
@@ -91,7 +91,7 @@ async function parse(path: string, three: directory_tree) {
         }
         delete file.html;
         three.files[dirent.name] = file;
-      }),
+      })
   );
   return files;
 }
