@@ -36,6 +36,7 @@ void (async function() {
 
   await parse(config.input_dir, three);
 
+  if (process.argv[2] !== "watch") return;
   fse
     .watch(config.input_dir, {
       encoding: "utf-8",
