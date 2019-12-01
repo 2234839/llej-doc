@@ -29,10 +29,9 @@ void (async function() {
     throw new Error("读取模板失败");
   }
   try {
-    await fse.copy(config.input_dir, config.out_dir,{dereference :true});
+    await fse.copy(config.input_dir, config.out_dir, { dereference: true });
   } catch (error) {
-    console.error("复制文件失败",error);
-
+    console.error("复制文件失败", error);
   }
 
   await parse(config.input_dir, three);
@@ -45,9 +44,12 @@ void (async function() {
     })
     .addListener("change", (event, file_path) => {
       console.log(file_path);
-      const path = Path.join(config.input_dir, "/", "" + file_path);
-      if (!path.endsWith(".md")) return;
-      article_parse(String(path));
+      const input_path = Path.join(config.input_dir, "/", "" + file_path);
+      const out_path = Path.join(config.out_dir, "/", "" + file_path);
+      fse.copy(input_path, out_path, { dereference: true });
+
+      if (!input_path.endsWith(".md")) return;
+      article_parse(String(input_path));
     });
 
   directory_to_generate(three, config.out_dir);
