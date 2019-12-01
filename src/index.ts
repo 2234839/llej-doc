@@ -28,7 +28,12 @@ void (async function() {
     console.error(error);
     throw new Error("读取模板失败");
   }
-  await fse.copy(config.input_dir, config.out_dir);
+  try {
+    await fse.copy(config.input_dir, config.out_dir,{dereference :true});
+  } catch (error) {
+    console.error("复制文件失败",error);
+
+  }
 
   await parse(config.input_dir, three);
 
