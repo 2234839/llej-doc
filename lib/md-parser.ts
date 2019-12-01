@@ -42,7 +42,7 @@ md.renderer.rules.a = function(tokens, idx, options, env, self) {
 };
 
 /** 解析文章md */
-export function md_parser_article(md_str: string) {
+export function md_parser_article(md_str: string): article {
   const title = md_str.match(/(?<=^# ).*/);
   if (title === null) throw "没有找到匹配的标题";
 
@@ -71,3 +71,9 @@ export function md_parser_article(md_str: string) {
 export function md_render(md_str: string) {
   return md.render(md_str);
 }
+
+export type article = {
+  title: string;
+  meta: any;
+  html: string;
+};
