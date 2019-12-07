@@ -36,7 +36,7 @@ void (async function() {
   await parse(config.input_dir, three);
   console.log("全量编译一次");
 
-  if (process.argv[2] !== "watch") {
+  if (process.argv[2] === "watch") {
     fse
       .watch(config.input_dir, {
         encoding: "utf-8",
