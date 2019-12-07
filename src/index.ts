@@ -36,27 +36,28 @@ void (async function() {
   await parse(config.input_dir, three);
   console.log("全量编译一次");
 
-  if (process.argv[2] !== "watch") return;
-  fse
-    .watch(config.input_dir, {
-      encoding: "utf-8",
-      persistent: true,
-      recursive: true,
-    })
-    .addListener("change", async (event, file_path) => {
-      console.log(file_path);
-      const input_path = Path.join(config.input_dir, "/", "" + file_path);
-      const out_path = Path.join(config.out_dir, "/", "" + file_path);
-      fse.copy(input_path, out_path, { dereference: true });
-      const gorp = input_path.split(/[\/\\]/);
-      const file_name = gorp[gorp.length - 1];
-      if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {
-        await getTemplate();
-        directory_to_generate(three, config.out_dir);
-      }
-      if (!input_path.endsWith(".md")) return;
-      article_parse(String(input_path));
-    });
+  if (process.argv[2] !== "watch") {
+    fse
+      .watch(config.input_dir, {
+        encoding: "utf-8",
+        persistent: true,
+        recursive: true,
+      })
+      .addListener("change", async (event, file_path) => {
+        console.log(file_path);
+        const input_path = Path.join(config.input_dir, "/", "" + file_path);
+        const out_path = Path.join(config.out_dir, "/", "" + file_path);
+        fse.copy(input_path, out_path, { dereference: true });
+        const gorp = input_path.split(/[\/\\]/);
+        const file_name = gorp[gorp.length - 1];
+        if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {
+          await getTemplate();
+          directory_to_generate(three, config.out_dir);
+        }
+        if (!input_path.endsWith(".md")) return;
+        article_parse(String(input_path));
+      });
+  }
 
   directory_to_generate(three, config.out_dir);
   try {
