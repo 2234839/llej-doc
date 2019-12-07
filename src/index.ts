@@ -3,7 +3,7 @@ import Path from "path";
 import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
 import { md_parser_article, article } from "../lib/md-parser";
 import { config, _res } from "./config";
-const res=_res
+const res = _res;
 import fse from "fs-extra";
 /** 程序一进来的时候的时间 */
 /** 提供给文件引用配置资源用用 */
@@ -32,11 +32,6 @@ void (async function() {
     files: {},
   };
   await getTemplate();
-  try {
-    await fse.copy(config.input_dir, config.out_dir, { dereference: true });
-  } catch (error) {
-    console.error("复制文件失败", error);
-  }
 
   await parse(config.input_dir, three);
   console.log("全量编译一次");
@@ -64,6 +59,13 @@ void (async function() {
     });
 
   directory_to_generate(three, config.out_dir);
+  try {
+    console.time("复制文件");
+    await fse.copy(config.input_dir, config.out_dir, { dereference: true });
+    console.timeEnd("复制文件");
+  } catch (error) {
+    console.error("复制文件失败", error);
+  }
   // console.log(three);
   process.once("exit", () => {
     console.timeEnd("总共耗时");

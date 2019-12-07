@@ -25,20 +25,22 @@ export async function directory_to_generate(directory_tree: directory_tree, path
     const element = <md_file>directory_tree.files[key];
     paths.push(`[${element.title}](${key.replace(/.md$/, ".html")})`);
   }
+  /** 没有文章的不生成目录 */
+  if (paths.length !== 0) {
+    paths = paths.map((str) => str);
+    const menu = { html: md_render(paths.join("\n")) };
+    /** 生成目录 */
+    try {
+      menu.html = eval(_res.menu_template);
+      await fs.writeFile(Path.join(path, "/", "index.html"), menu.html);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   for (const key in directory_tree.directory) {
     const element = directory_tree.directory[key];
     directory_to_generate(element, Path.join(path, "/", key));
     paths.push(`[${key}/](${key}/index.html)`);
-  }
-  /** 没有文章的不生成目录 */
-  if (paths.length === 0) return;
-  paths = paths.map((str) => str);
-  const menu = { html: md_render(paths.join("\n")) };
-  /** 生成目录 */
-  try {
-    menu.html = eval(_res.menu_template);
-    await fs.writeFile(Path.join(path, "/", "index.html"), menu.html);
-  } catch (error) {
-    console.error(error);
   }
 }
