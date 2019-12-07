@@ -6,28 +6,32 @@ import { config } from "./config";
 import fse from "fs-extra";
 /** 程序一进来的时候的时间 */
 /** 提供给文件用 */
-const res = config;
+const res = JSON.parse(JSON.stringify(config));
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
 config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
 console.time("总共耗时");
-void (async function() {
-  const three: directory_tree = {
-    directory: {},
-    files: {},
-  };
+async function getTemplate() {
   /** 读取模板 */
   try {
-    config.article_template = "`" + (await fs.readFile(config.article_template)).toString() + "`";
-    config.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
-    config.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
+    config.article_template = "`" + (await fs.readFile(res.article_template)).toString() + "`";
+    config.menu_template = "`" + (await fs.readFile(res.menu_template)).toString() + "`";
+    config.footer_template = "`" + (await fs.readFile(res.footer_template)).toString() + "`";
     config.footer_template = eval(config.footer_template);
-    config.header_template = "`" + (await fs.readFile(config.header_template)).toString() + "`";
+    config.header_template = "`" + (await fs.readFile(res.header_template)).toString() + "`";
     config.header_template = eval(config.header_template);
   } catch (error) {
     console.error(error);
     throw new Error("读取模板失败");
   }
+  return "";
+}
+void (async function() {
+  const three: directory_tree = {
+    directory: {},
+    files: {},
+  };
+  await getTemplate();
   try {
     await fse.copy(config.input_dir, config.out_dir, { dereference: true });
   } catch (error) {
@@ -35,6 +39,7 @@ void (async function() {
   }
 
   await parse(config.input_dir, three);
+  console.log("全量编译一次");
 
   if (process.argv[2] !== "watch") return;
   fse
@@ -43,12 +48,17 @@ void (async function() {
       persistent: true,
       recursive: true,
     })
-    .addListener("change", (event, file_path) => {
+    .addListener("change", async (event, file_path) => {
       console.log(file_path);
       const input_path = Path.join(config.input_dir, "/", "" + file_path);
       const out_path = Path.join(config.out_dir, "/", "" + file_path);
       fse.copy(input_path, out_path, { dereference: true });
-
+      const gorp = input_path.split(/[\/\\]/);
+      const file_name = gorp[gorp.length - 1];
+      if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {
+        await getTemplate();
+        directory_to_generate(three, config.out_dir);
+      }
       if (!input_path.endsWith(".md")) return;
       article_parse(String(input_path));
     });

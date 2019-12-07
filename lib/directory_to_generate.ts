@@ -16,6 +16,8 @@ type md_file = {
   title: string;
   meta: string[];
 };
+
+/** 重新生成目录 */
 export async function directory_to_generate(directory_tree: directory_tree, path: string) {
   let paths: string[] = [];
   for (const key in directory_tree.files) {
