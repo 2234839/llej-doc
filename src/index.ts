@@ -1,12 +1,12 @@
 import { promises as fs } from "fs";
 import Path from "path";
 import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
-import { md_parser_article } from "../lib/md-parser";
+import { md_parser_article, article } from "../lib/md-parser";
 import { config } from "./config";
 import fse from "fs-extra";
 /** 程序一进来的时候的时间 */
+/** 提供给文件用 */
 const res = config;
-
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
 config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
@@ -28,9 +28,31 @@ void (async function() {
     console.error(error);
     throw new Error("读取模板失败");
   }
-  await fse.copy(config.input_dir, config.out_dir);
+  try {
+    await fse.copy(config.input_dir, config.out_dir, { dereference: true });
+  } catch (error) {
+    console.error("复制文件失败", error);
+  }
 
   await parse(config.input_dir, three);
+
+  if (process.argv[2] !== "watch") return;
+  fse
+    .watch(config.input_dir, {
+      encoding: "utf-8",
+      persistent: true,
+      recursive: true,
+    })
+    .addListener("change", (event, file_path) => {
+      console.log(file_path);
+      const input_path = Path.join(config.input_dir, "/", "" + file_path);
+      const out_path = Path.join(config.out_dir, "/", "" + file_path);
+      fse.copy(input_path, out_path, { dereference: true });
+
+      if (!input_path.endsWith(".md")) return;
+      article_parse(String(input_path));
+    });
+
   directory_to_generate(three, config.out_dir);
   // console.log(three);
   process.once("exit", () => {
@@ -67,30 +89,13 @@ async function parse(path: string, three: directory_tree) {
       .filter((dirent) => dirent.name.endsWith(".md"))
       .map(async (dirent) => {
         const file_path = Path.join(path, "/", dirent.name);
-        let file;
         try {
-          file = md_parser_article(await (await fs.readFile(file_path)).toString());
+          const article = await article_parse(file_path);
+          delete article.html;
+          three.files[dirent.name] = article;
         } catch (error) {
-          return console.error(error, file_path);
+          console.error(error, file_path);
         }
-        const out_file_path = Path.resolve(__dirname, file_path.replace(/md$/, "html")).replace(
-          config.input_dir,
-          config.out_dir,
-        );
-        /** 重点是解析file */
-        try {
-          file.html = eval(config.article_template);
-        } catch (error) {
-          console.error("加载模板失败", error);
-        }
-        try {
-          await fs.writeFile(out_file_path, file.html);
-        } catch (error) {
-          await fs.mkdir(Path.dirname(out_file_path), { recursive: true });
-          await fs.writeFile(out_file_path, file.html);
-        }
-        delete file.html;
-        three.files[dirent.name] = file;
       }),
   );
   return files;
@@ -105,4 +110,32 @@ async function gettemplate(path: string) {
   console.log(template);
 
   return template;
+}
+/** 读取指定位置的文章并解析 */
+async function article_parse(file_path: string) {
+  let article;
+  try {
+    article = md_parser_article(await (await fs.readFile(file_path)).toString());
+  } catch (error) {
+    throw error;
+  }
+  /** 重点是解析file */
+  try {
+    article.html = eval(config.article_template);
+  } catch (error) {
+    console.error(error);
+    error.message = "解析模板失败";
+    throw error;
+  }
+  const out_file_path = Path.resolve(__dirname, file_path.replace(/md$/, "html")).replace(
+    config.input_dir,
+    config.out_dir,
+  );
+  try {
+    await fs.writeFile(out_file_path, article.html);
+  } catch (error) {
+    await fs.mkdir(Path.dirname(out_file_path), { recursive: true });
+    await fs.writeFile(out_file_path, article.html);
+  }
+  return article;
 }
