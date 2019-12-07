@@ -2,11 +2,11 @@ import { promises as fs } from "fs";
 import Path from "path";
 import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
 import { md_parser_article, article } from "../lib/md-parser";
-import { config } from "./config";
+import { config, _res } from "./config";
+const res=_res
 import fse from "fs-extra";
 /** 程序一进来的时候的时间 */
-/** 提供给文件用 */
-const res = JSON.parse(JSON.stringify(config));
+/** 提供给文件引用配置资源用用 */
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
 config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
@@ -14,12 +14,12 @@ console.time("总共耗时");
 async function getTemplate() {
   /** 读取模板 */
   try {
-    config.article_template = "`" + (await fs.readFile(res.article_template)).toString() + "`";
-    config.menu_template = "`" + (await fs.readFile(res.menu_template)).toString() + "`";
-    config.footer_template = "`" + (await fs.readFile(res.footer_template)).toString() + "`";
-    config.footer_template = eval(config.footer_template);
-    config.header_template = "`" + (await fs.readFile(res.header_template)).toString() + "`";
-    config.header_template = eval(config.header_template);
+    _res.article_template = "`" + (await fs.readFile(config.article_template)).toString() + "`";
+    _res.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
+    _res.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
+    _res.footer_template = eval(_res.footer_template);
+    _res.header_template = "`" + (await fs.readFile(config.header_template)).toString() + "`";
+    _res.header_template = eval(_res.header_template);
   } catch (error) {
     console.error(error);
     throw new Error("读取模板失败");
@@ -121,7 +121,7 @@ async function article_parse(file_path: string) {
   }
   /** 重点是解析file */
   try {
-    article.html = eval(config.article_template);
+    article.html = eval(_res.article_template);
   } catch (error) {
     console.error(error);
     error.message = "解析模板失败";

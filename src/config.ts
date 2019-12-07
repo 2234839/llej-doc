@@ -21,3 +21,5 @@ export const config = {
     "/root/doc/_themes",
   ],
 };
+/** 用于给模板内部引用资源 */
+export const _res = JSON.parse(JSON.stringify(config));
