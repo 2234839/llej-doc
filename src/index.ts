@@ -18,11 +18,11 @@ void (async function() {
   };
   /** 读取模板 */
   try {
-    config.article_template = await gettemplate(config.article_template);
-    config.menu_template = await gettemplate(config.menu_template);
-    config.footer_template = await gettemplate(config.footer_template);
+    config.article_template = "`" + (await fs.readFile(config.article_template)).toString() + "`";
+    config.menu_template = "`" + (await fs.readFile(config.menu_template)).toString() + "`";
+    config.footer_template = "`" + (await fs.readFile(config.footer_template)).toString() + "`";
     config.footer_template = eval(config.footer_template);
-    config.header_template = await gettemplate(config.header_template);
+    config.header_template = "`" + (await fs.readFile(config.header_template)).toString() + "`";
     config.header_template = eval(config.header_template);
   } catch (error) {
     console.error(error);
@@ -101,16 +101,6 @@ async function parse(path: string, three: directory_tree) {
   return files;
 }
 
-async function gettemplate(path: string) {
-  const raw = (await fs.readFile(path)).toString();
-  const str = JSON.stringify(raw);
-
-  console.log(str[0], str[str.length - 1]);
-  const template = `\`${str.slice(1, str.length - 2)}\``;
-  console.log(template);
-
-  return template;
-}
 /** 读取指定位置的文章并解析 */
 async function article_parse(file_path: string) {
   let article;
