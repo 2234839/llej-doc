@@ -25,6 +25,11 @@ export async function directory_to_generate(directory_tree: directory_tree, path
     const element = <md_file>directory_tree.files[key];
     paths.push(`[${element.title}](${key.replace(/.md$/, ".html")})`);
   }
+  for (const key in directory_tree.directory) {
+    const element = directory_tree.directory[key];
+    directory_to_generate(element, Path.join(path, "/", key));
+    paths.push(`[${key}/](${key}/index.html)`);
+  }
   /** 没有文章的不生成目录 */
   if (paths.length !== 0) {
     paths = paths.map((str) => str);
@@ -36,11 +41,5 @@ export async function directory_to_generate(directory_tree: directory_tree, path
     } catch (error) {
       console.error(error);
     }
-  }
-
-  for (const key in directory_tree.directory) {
-    const element = directory_tree.directory[key];
-    directory_to_generate(element, Path.join(path, "/", key));
-    paths.push(`[${key}/](${key}/index.html)`);
   }
 }
