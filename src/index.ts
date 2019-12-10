@@ -53,6 +53,7 @@ void (async function() {
         if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {
           await getTemplate();
           directory_to_generate(three, config.out_dir);
+          console.log("生成目录完毕");
         }
         if (!input_path.endsWith(".md")) return;
         article_parse(String(input_path));
@@ -60,13 +61,15 @@ void (async function() {
   }
 
   directory_to_generate(three, config.out_dir);
-  try {
-    console.time("复制文件");
-    await fse.copy(config.input_dir, config.out_dir, { dereference: true });
-    console.timeEnd("复制文件");
-  } catch (error) {
-    console.error("复制文件失败", error);
-  }
+  console.log("生成目录完毕");
+
+  // try {
+  //   console.time("复制文件");
+  //   await fse.copy(config.input_dir, config.out_dir, { dereference: true });
+  //   console.timeEnd("复制文件");
+  // } catch (error) {
+  //   console.error("复制文件失败", error);
+  // }
   // console.log(three);
   process.once("exit", () => {
     console.timeEnd("总共耗时");
