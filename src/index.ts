@@ -46,8 +46,6 @@ void (async function() {
       .addListener("change", async (event, file_path) => {
         console.log(file_path);
         const input_path = Path.join(config.input_dir, "/", "" + file_path);
-        const out_path = Path.join(config.out_dir, "/", "" + file_path);
-        fse.copy(input_path, out_path, { dereference: true });
         const gorp = input_path.split(/[\/\\]/);
         const file_name = gorp[gorp.length - 1];
         if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {

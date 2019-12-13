@@ -33,6 +33,7 @@
     "markdown-it-attrs": "^3.0.1",
     "markdown-it-multimd-table": "^3.2.3",
     "markdown-it-table-of-contents": "^0.4.4",
+    "mermaid": "^8.4.3",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2"
   }
