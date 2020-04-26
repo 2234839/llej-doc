@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "llejdoc": "node bin/llejdoc.js",
-    "start": "npm run build && npm run llejdoc -- build"
+    "start": "npm run build && npm run llejdoc -- build",
+    "build:article":"npm run llejdoc"
   },
   "repository": {
     "type": "git",

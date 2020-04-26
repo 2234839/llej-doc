@@ -13,7 +13,6 @@ config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
 config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
 console.time("总共耗时");
-
 yargs
   .command(
     "build",
@@ -59,6 +58,25 @@ yargs
       //   }
       //   if (!input_path.endsWith(".md")) return;
       // });
+    },
+  )
+  // .command(
+  //   "search [search_str]",
+  //   "从存储库中进行搜索",
+  //   (yargs) => {},
+  //   async (argv) => {
+  //     console.log(await search(<string>argv.search_str));
+  //   },
+  // )
+  .command(
+    "buildarticle [path]",
+    "编译单篇文章",
+    (yargs) => {},
+    async (argv) => {
+      res = await getTemplate();
+
+      //@ts-ignore
+      console.log(JSON.stringify(await article_parse(String(argv.path), res)));
     },
   )
   .usage("------  llej doc 崮生的博客文档生成器  -------")
