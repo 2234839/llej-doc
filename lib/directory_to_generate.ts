@@ -1,8 +1,6 @@
 import { promises as fs } from "fs";
 import Path from "path";
 import { md_render } from "./md-parser";
-import { config, _res } from "../src/config";
-const res = _res;
 /**目录树 */
 export type directory_tree = {
   /** 当前这级目录的名称 */
@@ -17,8 +15,8 @@ type md_file = {
   meta: string[];
 };
 
-/** 重新生成目录 */
-export async function directory_to_generate(directory_tree: directory_tree, path: string) {
+/** 根据文件生成目录 */
+export async function directory_to_generate(directory_tree: directory_tree, path: string, res: any) {
   let paths: string[] = [];
   for (const key in directory_tree.files) {
     if (!key.endsWith(".md")) continue;
@@ -27,7 +25,7 @@ export async function directory_to_generate(directory_tree: directory_tree, path
   }
   for (const key in directory_tree.directory) {
     const element = directory_tree.directory[key];
-    directory_to_generate(element, Path.join(path, "/", key));
+    directory_to_generate(element, Path.join(path, "/", key), res);
     paths.push(`[${key}/](${key}/index.html)`);
   }
   /** 没有文章的不生成目录 */
@@ -36,7 +34,7 @@ export async function directory_to_generate(directory_tree: directory_tree, path
     const menu = { html: md_render(paths.join("\n")) };
     /** 生成目录 */
     try {
-      menu.html = eval(_res.menu_template);
+      menu.html = eval(res.menu_template);
       await fs.writeFile(Path.join(path, "/", "index.html"), menu.html);
     } catch (error) {
       console.error(error);

@@ -10,7 +10,6 @@
 			"request": "launch",
 			"args": [
 				"${workspaceRoot}/src/index.ts",
-				"watch"
 			],
 			"runtimeArgs": [
 				"-r",
@@ -20,7 +19,8 @@
 			"protocol": "inspector",
 			"internalConsoleOptions": "openOnSessionStart",
 			"env": {
-				"TS_NODE_IGNORE": "false"
+				"TS_NODE_IGNORE": "false",
+				"isDev": "true"
 			}
 		}
 	]

@@ -36,7 +36,7 @@ md.use(require("markdown-it-attrs"), {
 });
 /** 图片渲染 */
 const a_default_render = md.renderer.rules.a;
-md.renderer.rules.a = function(tokens, idx, options, env, self) {
+md.renderer.rules.a = function (tokens, idx, options, env, self) {
   console.log(tokens);
   return a_default_render(tokens, idx, options, env, self);
 };
@@ -65,6 +65,7 @@ export function md_parser_article(md_str: string): article {
     title: title[0],
     meta,
     html: md.render(md_str),
+    md: md_str,
   };
 }
 
@@ -76,4 +77,6 @@ export type article = {
   title: string;
   meta: any;
   html: string;
+  /** markdown 源码 */
+  md: string;
 };
