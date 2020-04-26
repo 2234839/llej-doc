@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import fse from "fs-extra";
-import Path from "path";
+import Path, { resolve } from "path";
 import { directory_to_generate, directory_tree } from "../lib/directory_to_generate";
 import { md_parser_article } from "../lib/md-parser";
 import { config, getTemplate } from "./config";
@@ -149,7 +149,7 @@ async function article_parse(file_path: string, res: any) {
     error.message = "解析模板失败";
     throw error;
   }
-  const out_file_path = file_path.replace(/md$/, "html").replace(config.input_dir, config.out_dir);
+  const out_file_path = resolve(file_path).replace(/md$/, "html").replace(resolve(config.input_dir), resolve(config.out_dir));
   try {
     await fs.writeFile(out_file_path, article.html);
   } catch (error) {
