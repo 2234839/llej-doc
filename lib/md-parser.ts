@@ -1,5 +1,9 @@
 import MarkdownIt from "markdown-it";
+import { time33 } from "./hash";
 MarkdownIt;
+import { promises as fs } from "fs";
+import { resolve } from "path";
+import { config } from "../src/config";
 
 var md = MarkdownIt({
   html: true, //允许md中的html
@@ -42,7 +46,8 @@ md.renderer.rules.a = function (tokens, idx, options, env, self) {
 };
 
 /** 解析文章md */
-export function md_parser_article(md_str: string): article {
+export async function md_parser_article(file_path: string): Promise<article> {
+  const md_str = await (await fs.readFile(file_path)).toString();
   const title = md_str.match(/(?<=^# ).*/);
   if (title === null) throw "没有找到匹配的标题";
 
@@ -66,6 +71,8 @@ export function md_parser_article(md_str: string): article {
     meta,
     html: md.render(md_str),
     md: md_str,
+    content_hash: String(time33(md_str)),
+    path: resolve(file_path).replace(resolve(config.input_dir), ""),
   };
 }
 
@@ -79,4 +86,8 @@ export type article = {
   html: string;
   /** markdown 源码 */
   md: string;
+  /** md 的hash */
+  content_hash: string;
+  /** md 文档的地址 */
+  path: string;
 };

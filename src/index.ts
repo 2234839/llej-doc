@@ -12,69 +12,41 @@ export let res = {} as any;
 config.input_dir = Path.resolve(config.input_dir);
 config.out_dir = Path.resolve(config.out_dir);
 config.filter_dir = config.filter_dir.map((path) => Path.resolve(path));
-console.time("总共耗时");
 yargs
-  .command(
-    "build",
-    "编译",
-    function (yargs) {
-      return yargs.option("article", {
-        alias: "article",
-        describe: "单个文章的路径",
-      });
-    },
-    async (argv) => {
-      const three: directory_tree = {
-        directory: {},
-        files: {},
-      };
-      res = await getTemplate();
-      if (argv.article) {
-        // llejdoc build --article "D:/code/doc/record/每日总结/2020/4月.md"  // 命令使用示例
-        console.log(await article_parse(String(argv.article), res));
-      } else {
-        process.once("exit", () => {
-          console.timeEnd("总共耗时");
-        });
-        console.log("开始全量编译");
-        await parse(config.input_dir, three);
-        directory_to_generate(three, config.out_dir, res);
+  .command("build", "编译", async (argv) => {
+    const three = {
+      directory: {},
+      files: {},
+    } as directory_tree;
+    function three_forEach(three: directory_tree, cb: (par: directory_tree["files"][string]) => void) {
+      for (const key in three.files) {
+        if (three.files.hasOwnProperty(key)) {
+          const element = three.files[key];
+          cb(element);
+        }
       }
-      // fse
-      // .watch(config.input_dir, {
-      //   encoding: "utf-8",
-      //   persistent: true,
-      //   recursive: true,
-      // })
-      // .addListener("change", async (event, file_path) => {
-      //   console.log(file_path);
-      //   const input_path = Path.join(config.input_dir, "/", "" + file_path);
-      //   const gorp = input_path.split(/[\/\\]/);
-      //   const file_name = gorp[gorp.length - 1];
-      //   if (["footer.html", "article.html", "header.html", "menu.html"].includes(file_name)) {
-      //     res = await getTemplate();
-      //     directory_to_generate(three, config.out_dir, res);
-      //     console.log("生成目录完毕");
-      //   }
-      //   if (!input_path.endsWith(".md")) return;
-      // });
-    },
-  )
-  // .command(
-  //   "search [search_str]",
-  //   "从存储库中进行搜索",
-  //   (yargs) => {},
-  //   async (argv) => {
-  //     console.log(await search(<string>argv.search_str));
-  //   },
-  // )
+      for (const key in three.directory) {
+        if (three.directory.hasOwnProperty(key)) {
+          const element = three.directory[key];
+          three_forEach(element, cb);
+        }
+      }
+    }
+    res = await getTemplate();
+    const three_json = await parse(config.input_dir, three);
+    const out_json = [] as { path: string; title: string; content_hash: string }[];
+    three_forEach(three_json, (file) => {
+      out_json.push({ title: file.title, path: file.path, content_hash: file.content_hash });
+    });
+    console.log(JSON.stringify(out_json));
+    directory_to_generate(three, config.out_dir, res);
+  })
   .command(
     "buildarticle [path]",
     "编译单篇文章",
     (yargs) => {},
     async (argv) => {
       res = await getTemplate();
-
       //@ts-ignore
       console.log(JSON.stringify(await article_parse(String(argv.path), res)));
     },
@@ -127,14 +99,14 @@ async function parse(path: string, three: directory_tree) {
         }
       }),
   );
-  return files;
+  return three;
 }
 
 /** 读取指定位置的文章并解析 */
 async function article_parse(file_path: string, res: any) {
   let article;
   try {
-    article = md_parser_article(await (await fs.readFile(file_path)).toString());
+    article = await md_parser_article(file_path);
   } catch (error) {
     throw error;
   }
@@ -149,7 +121,9 @@ async function article_parse(file_path: string, res: any) {
     error.message = "解析模板失败";
     throw error;
   }
-  const out_file_path = resolve(file_path).replace(/md$/, "html").replace(resolve(config.input_dir), resolve(config.out_dir));
+  const out_file_path = resolve(file_path)
+    .replace(/md$/, "html")
+    .replace(resolve(config.input_dir), resolve(config.out_dir));
   try {
     await fs.writeFile(out_file_path, article.html);
   } catch (error) {
