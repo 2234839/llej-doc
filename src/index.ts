@@ -130,5 +130,11 @@ async function article_parse(file_path: string, res: any) {
     await fs.mkdir(Path.dirname(out_file_path), { recursive: true });
     await fs.writeFile(out_file_path, article.html);
   }
+  try {
+    /** 尝试写出json */
+    await fs.writeFile(out_file_path.replace(/html$/, "json"),JSON.stringify(article) );
+  } catch (error) {
+
+  }
   return article;
 }

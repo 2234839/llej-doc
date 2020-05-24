@@ -13,6 +13,14 @@
         "titleBar.inactiveForeground": "#e7e7e799",
         "statusBar.background": "#68217a",
         "statusBarItem.hoverBackground": "#8a2ca2",
-        "statusBar.foreground": "#e7e7e7"
-    }
+        "statusBar.foreground": "#e7e7e7",
+        "activityBar.activeBackground": "#8a2ca2",
+        "editorGroup.border": "#8a2ca2",
+        "panel.border": "#8a2ca2",
+        "sideBar.border": "#8a2ca2",
+        "statusBar.border": "#68217a",
+        "tab.activeBorder": "#8a2ca2",
+        "titleBar.border": "#68217a"
+    },
+    "deno.enable": false
 }
