@@ -65,11 +65,12 @@ export async function md_parser_article(file_path: string): Promise<article> {
       if (value === null) throw "没有找到匹配的值";
       meta[key[0]] = value[0].split(",");
     });
-
+  const raw_html = md.render(md_str);
   return {
     title: title[0],
     meta,
-    html: md.render(md_str),
+    html: raw_html,
+    raw_html,
     md: md_str,
     content_hash: String(time33(md_str)),
     path: resolve(file_path).replace(resolve(config.input_dir), ""),
@@ -83,7 +84,8 @@ export function md_render(md_str: string) {
 export type article = {
   title: string;
   meta: any;
-  html: string;
+  html?: string;
+  raw_html?: string
   /** markdown 源码 */
   md: string;
   /** md 的hash */
