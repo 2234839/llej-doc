@@ -15,15 +15,21 @@ export const config = {
   isWin,
   /** 过滤一些目录 */
   filter_dir: [
-    "D:\\code\\doc\\node_modules",
-    "/root/doc/node_modules",
-    "D:\\code\\doc\\.git",
-    "/root/doc/.git",
-    "D:\\code\\doc\\.vscode",
-    "/root/doc/.vscode",
-    "D:\\code\\doc\\_themes",
-    "/root/doc/_themes",
-  ],
+    "node_modules",
+    "node_modules",
+    ".git",
+    ".git",
+    ".vscode",
+    ".vscode",
+    "_themes",
+    "_themes",
+    "sapper",
+    "_template",
+    "cypress",
+    "page",
+  ].flatMap((el) => {
+    return ["D:\\code\\doc\\" + el.replace("/", "\\"), "/root/doc/" + el];
+  }),
 };
 /** 加载模板资源，返回资源对象 */
 export async function getTemplate() {
