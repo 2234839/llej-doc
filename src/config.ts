@@ -22,7 +22,7 @@ export const config = {
     ".vscode",
     ".vscode",
     "_themes",
-    "_themes",
+    "__sapper__",
     "sapper",
     "_template",
     "cypress",
