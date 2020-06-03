@@ -27,6 +27,7 @@ export const config = {
     "_template",
     "cypress",
     "page",
+    "src",
   ].flatMap((el) => {
     return ["D:\\code\\doc\\" + el.replace("/", "\\"), "/root/doc/" + el];
   }),
